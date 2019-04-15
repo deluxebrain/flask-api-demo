@@ -1,0 +1,66 @@
+---
+
+- name: Install system dependencies
+  become: yes
+  package:
+    name: "{{ item }}"
+    state: present
+  register: result
+  retries: 3
+  until: result is succeeded
+  with_items: "{{ system_dependencies }}"
+
+- name: Install system python
+  become: yes
+  package:
+    name: "{{ item }}"
+    state: present
+  register: result
+  retries: 3
+  until: result is succeeded
+  with_items: "{{ system_python_packages }}"
+
+# Install pyenv
+- name: Clone pyenv
+  git:
+    repo: "https://github.com/pyenv/pyenv.git"
+    dest: "{{ pyenv_root }}"
+
+- name: Create .pyenvrc file
+  template:
+    src: .pyenvrc.j2
+    dest: "{{ ansible_env.HOME }}/.pyenvrc"
+    mode: "0644"
+
+# Install python interpreters
+- name: Set global python
+  shell: . {{ ansible_env.HOME }}/.pyenvrc && pyenv global system
+
+- name: Install Python interpreters
+  shell: . {{ ansible_env.HOME }}/.pyenvrc && pyenv install {{ item }}
+  args:
+    creates: "{{ pyenv_root }}/versions/{{ item }}/bin/python"
+  with_items: "{{ python_versions }}"
+
+# Install user pip packages into system python
+- name: Install pip packages
+  pip:
+    name:
+      - pipenv
+    extra_args: --user
+  environment:
+      PATH: "{{ ansible_env.HOME }}/.local/bin:{{ ansible_env.PATH}}"
+
+# Install pyenv plugins
+- name: Clone pyenv-virtualenv
+  git:
+    repo: "https://github.com/pyenv/pyenv-virtualenv.git"
+    dest: "{{ pyenv_root }}/plugins/pyenv-virtualenv"
+
+# Create dotfiles for python interpreters
+- name: Create .condarc file
+  template:
+    src: .condarc.j2
+    dest: "{{ ansible_env.HOME }}/.condarc"
+    mode: "0644"
+  when: "python_versions | select('search', 'conda') | list"

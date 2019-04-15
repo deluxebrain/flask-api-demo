@@ -1,5 +1,6 @@
-# Pyenv build dependencies
-pyenv_dependencies:
+---
+
+system_dependencies:
   - make
   - build-essential
   - libssl-dev
@@ -17,3 +18,8 @@ pyenv_dependencies:
   - libffi-dev
   - liblzma-dev
   - python-openssl
+  - git-core
+
+system_python_packages:
+  - python
+  - python-pip

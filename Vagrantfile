@@ -3,6 +3,11 @@
 
 VAGRANT_API_VERSION = "2"
 
+if !ENV['PYTHON_VERSION'] || !ENV['APP_NAME'] || !ENV['PORT']
+    abort("Ensure the following environment values are set: PYTHON_VERSION, APP_NAME, PORT")
+    exit
+end
+
 # Install Ansible on the guest
 $ansible_install_script = <<-SCRIPT
 export DEBIAN_FRONTEND=noninteractive
@@ -17,10 +22,12 @@ SCRIPT
 
 Vagrant.configure(VAGRANT_API_VERSION) do |config|
     config.vm.box = "ubuntu/bionic64"
-    config.vm.hostname = "flask-api-demo"
+    config.vm.hostname = ENV['APP_NAME']
 
-    config.vm.network :forwarded_port, id: "flask",
-        guest: 5000, host: 5000, auto_correct: false
+    config.vm.network :forwarded_port,
+        guest: ENV['PORT'],
+        host: ENV['PORT'],
+        auto_correct: false
 
     # Fix `stdin: is not a tty` warning
     # https://github.com/hashicorp/vagrant/issues/1673
@@ -34,6 +41,10 @@ Vagrant.configure(VAGRANT_API_VERSION) do |config|
     config.vm.provision "ansible_local" do |ansible|
         ansible_verbose = true
         ansible.playbook = "provisioning/playbook.yml"
+        ansible.extra_vars = {
+            python_versions: [ ENV['PYTHON_VERSION'] ],
+            docker_users: ['vagrant'],
+        }
     end
 
     config.vm.provider "virtualbox" do |vbox, override|

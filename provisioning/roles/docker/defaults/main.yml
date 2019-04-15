@@ -1,0 +1,7 @@
+---
+
+docker_version: "latest"
+
+install_docker_compose: true
+
+docker_users: []

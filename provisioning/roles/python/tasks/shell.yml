@@ -2,7 +2,7 @@
 
 - name: Set path to .bashrc
   set_fact:
-    bashrc_path: "{{ pyenv_home }}/.bashrc"
+    bashrc_path: "{{ ansible_env.HOME }}/.bashrc"
   when: bashrc_path is undefined
 
 - name: Check .bashrc file exists

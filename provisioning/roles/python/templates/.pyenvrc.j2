@@ -1,6 +1,7 @@
 # Add pyenv into path
 export PYENV_ROOT="{{ pyenv_root }}"
 export PATH="${PYENV_ROOT}/bin:${PATH}"
+
 # Resolve $HOME/.local/bin/pip ahead of /usr/bin/pip
 # Resolve packages installed using pip --user
 export PATH="$HOME/.local/bin:$PATH"

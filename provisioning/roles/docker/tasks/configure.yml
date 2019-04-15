@@ -1,0 +1,24 @@
+---
+
+- name: Verify docker installation
+  file:
+    path: "{{ item }}"
+    state: directory
+  with_items:
+    - /etc/docker
+    - /etc/systemd/system
+
+- name: Add users to docker group
+  become: yes
+  user:
+    name: "{{ item }}"
+    groups: docker
+    append: true
+  with_items: "{{ docker_users }}"
+  when: "docker_users | length > 0"
+
+- name: Start docker on system startup
+  become: yes
+  systemd:
+    name: docker
+    enabled: true

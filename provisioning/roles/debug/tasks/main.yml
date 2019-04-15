@@ -1,0 +1,21 @@
+---
+
+# "ansible_system": "Linux"
+- name: ansible_system
+  debug: var=ansible_system
+
+# "ansible_os_family": "Debian"
+- name: ansible_os_family
+  debug: var=ansible_os_family
+
+# "ansible_distribution": "Ubuntu"
+- name: ansible_distribution
+  debug: var=ansible_distribution
+
+# "ansible_distribution_release": "bionic"
+- name: ansible_distribution_release
+  debug: var=ansible_distribution_release
+
+# "ansible_distribution_major_version": "18"
+- name: ansible_distribution_major_version
+  debug: var=ansible_distribution_major_version
