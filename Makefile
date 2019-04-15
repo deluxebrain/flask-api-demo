@@ -24,6 +24,14 @@ provision: ## Re-run Vagrant ansible provisioners
 .PHONY: clean
 clean: ## Teardown working environment
 	@vagrant destroy --force
+	@vboxmanage list runningvms \
+	| grep $(APP_NAME) \
+	| awk '{ print $$2 }' \
+	| xargs -I vmid vboxmanage controlvm vmid poweroff
+	@vboxmanage list vms \
+	| grep $(APP_NAME) \
+	| awk '{ print $$2 }' \
+	| xargs -I vmid vboxmanage unregistervm vmid
 
 .PHONY: connect
 connect: ## Connect to guest
