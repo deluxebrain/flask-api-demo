@@ -16,7 +16,7 @@ provision: ## Run ansible provisioners
 
 .PHONY: install
 install: ## Install pipenv virtual environment
-	pipenv install
+	pipenv install # --pre ?
 
 .PHONY: run
 run: ## Run flask embedded web server

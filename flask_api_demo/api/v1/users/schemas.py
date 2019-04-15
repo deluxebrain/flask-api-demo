@@ -1,15 +1,13 @@
-import logging
+from marshmallow import fields
 
 from flask_api_demo.extensions import ma
 
-log = logging.getLogger(__name__)
-
 class UserSchema(ma.Schema):
-    class Meta:
-        fields = ('name', 'email', 'created_at', '_links')
+    name = fields.Str(required=True)
+    created_at = fields.Date(required=True)
     _links = ma.Hyperlinks({
-        'self': ma.URLFor('api_v1.user_api', id='<id>'),
-        'collection': ma.URLFor('api_v1.user_api')
+        'self': ma.URLFor('api_v1_user.user_detail', user_id='<id>'),
+        'collection': ma.URLFor('api_v1_user.user_listing')
     })
 
 user_schema = UserSchema()
