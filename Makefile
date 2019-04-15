@@ -53,11 +53,7 @@ build: ## Build docker container
 
 .PHONY: run
 run: ## Run docker container
-	@docker run -i -t --rm \
-		--name="$(APP_NAME)"
-		--env-file=./config.env \
-		-p=$(PORT):$(PORT) \
-		$(APP_NAME)
+	docker run -i -t --rm --name=$(APP_NAME) -p=$(PORT):$(PORT) $(APP_NAME)
 
 .PHONY: stop
 stop: ## Stop and tear down docker container
@@ -70,7 +66,7 @@ stop: ## Stop and tear down docker container
 tag: git-tag docker-tag-latest docker-tag-version
 
 .PHONY: git-tag
-git-tag: # Tag git repos with current version
+git-tag: ## Tag git repos with current version
 	$(eval VERSION := $(shell cat $(VERSION_FILE)))
 	@git add $(VERSION_FILE)
 	@git commit -m "Bumped version to $(VERSION)"
@@ -83,7 +79,7 @@ docker-tag-latest: ## Tag current docker image as latest
 	@docker tag $(APP_NAME) $(DOCKER_REPO)/$(APP_NAME):latest
 
 .PHONY: docker-tag-version
-tag-version: ## Tag docker image with version specified in VERSION file
+docker-tag-version: ## Tag docker image with version specified in VERSION file
 	$(eval VERSION := $(shell cat $(VERSION_FILE)))
 	@docker tag $(APP_NAME) $(DOCKER_REPO)/$(APP_NAME):$(VERSION)
 
